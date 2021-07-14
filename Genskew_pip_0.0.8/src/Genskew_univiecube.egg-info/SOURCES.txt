@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+src/Genskew_univiecube/__init__.py
+src/Genskew_univiecube.egg-info/PKG-INFO
+src/Genskew_univiecube.egg-info/SOURCES.txt
+src/Genskew_univiecube.egg-info/dependency_links.txt
+src/Genskew_univiecube.egg-info/requires.txt
+src/Genskew_univiecube.egg-info/top_level.txt

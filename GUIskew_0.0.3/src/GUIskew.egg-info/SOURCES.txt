@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+src/GUIskew/__init__.py
+src/GUIskew/__main__.py
+src/GUIskew.egg-info/PKG-INFO
+src/GUIskew.egg-info/SOURCES.txt
+src/GUIskew.egg-info/dependency_links.txt
+src/GUIskew.egg-info/requires.txt
+src/GUIskew.egg-info/top_level.txt

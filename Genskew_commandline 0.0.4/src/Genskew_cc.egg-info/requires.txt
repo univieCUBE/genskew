@@ -1,0 +1,5 @@
+matplotlib
+Biopython
+argparse
+Genskew_univiecube
+GUIskew

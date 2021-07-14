@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+src/Genskew_cc.egg-info/PKG-INFO
+src/Genskew_cc.egg-info/SOURCES.txt
+src/Genskew_cc.egg-info/dependency_links.txt
+src/Genskew_cc.egg-info/requires.txt
+src/Genskew_cc.egg-info/top_level.txt
+src/genskew/__init__.py
+src/genskew/__main__.py
