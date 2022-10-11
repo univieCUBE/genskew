@@ -7,4 +7,6 @@ The results are provided as data table and as graphical plot. The global minimum
 
 There are four versions of this Program: Genskew_univiecube (the python library), Genskew_cc (a commandline client), GUIskew (the graphical version of genskew) and Webskew (the online version). 
 
-The first three Versions can be found on pipy, where the usage is explained in more detail. The last version, webskew, is the online version of genskew and can be found on the gesnkew website, which is currently not yet availabe.
+The first three Versions can be found on pipy, where the usage is explained in more detail. The last version, webskew, is the online version of genskew and can be found on the genskew website, which is currently not yet availabe.
+
+To build this yourself, just download the respective directories and run the python build command python3 -m build
