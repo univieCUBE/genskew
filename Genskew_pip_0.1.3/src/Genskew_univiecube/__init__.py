@@ -10,6 +10,7 @@ import shutil
 import numpy as np
 import matplotlib.ticker as tick
 
+# ToDo: gzip usage
 
 class NoValidFile(Exception):
     pass
@@ -22,13 +23,14 @@ class Object:
         self.sequence = sequence
         self.nuc_1 = nuc_1
         self.nuc_2 = nuc_2
-
+# for automatic calculation of stepsize
     def gen_stepsize(self):
         stepsize = int(len(self.sequence) / 1000)
         if stepsize < 100:
             stepsize = 100
         return stepsize
 
+# for automatic calculation of windowsize
     def gen_windowsize(self):
         windowsize = int(len(self.sequence) / 1000)
         if windowsize < 100:
@@ -36,6 +38,7 @@ class Object:
         return windowsize
 
     def gen_results(self):
+        # set the step / windowsize if not already set
         if not self.stepsize:
             self.stepsize = self.gen_stepsize()
             if self.stepsize < 100:
@@ -53,22 +56,30 @@ class Object:
         i = int(self.windowsize / 2)
         for each in range(math.ceil(len(self.sequence) / self.stepsize)):
             if i < len(self.sequence):
+                # counting the nucleotides in windowsize
                 a = self.sequence[i - int(self.windowsize / 2):i + int(self.windowsize / 2)].count(self.nuc_1)
                 b = self.sequence[i - int(self.windowsize / 2):i + int(self.windowsize / 2)].count(self.nuc_2)
+                # skew algorithm
                 skew = (a - b) / (a + b)
                 y1.append(skew)
+                # cumulative skew
                 cumulative_unscaled = cumulative_unscaled + skew
                 y2.append(cumulative_unscaled)
                 x.append(i + 1)
                 cm_list.append(cumulative_unscaled)
+                # advancing in sequence by stepsize
                 i = i + self.stepsize
+        # calculating the factor by which to scale cumulative to not go higher then max skew in graph
         cm = max(cm_list)
         m = max(y1)
         scale = m / cm
+        # max and min for graph
         max_position = y2.index(max(y2)) * self.stepsize
         min_position = y2.index(min(y2)) * self.stepsize
+        # scaling
         for j in cm_list:
             y2_scaled.append(j * scale)
+        # returning with namedtuple
         results = namedtuple("results",
                              ['x', 'skew', 'cumulative', 'cumulative_unscaled', 'max_cumulative', 'min_cumulative',
                               'max_cm_position', 'min_cm_position', 'stepsize', 'windowsize', 'nuc_1', 'nuc_2'])
@@ -93,14 +104,18 @@ def input_files(file_location_list):
     c = 0
     file_location_processed = []
     file_types = ['fasta', 'gb']
+
     for file_location in file_location_list:
+        # check if entry is directory or file
         if os.path.isdir(file_location):
-            # os.scandir anstatt listdir
+            # os.scandir anstatt listdir?
             for entry in os.listdir(file_location):
                 if os.path.isfile(os.path.join(file_location, entry)):
                     is_directory = True
+                    # ToDo: change to actual file testing instead of going with .fasta endings
                     if os.path.join(file_location, entry).split('.')[-1] in file_types:
                         file_location_processed.append(os.path.join(file_location, entry))
+                    # ToDo: change to try: gzip.open() instead of if clause
                     if os.path.join(file_location, entry).split('.')[-1] == 'gz':
                         if os.path.join(file_location, entry).split('.')[-2] in file_types:
                             file_location_processed.append(os.path.join(file_location, entry))
@@ -118,14 +133,17 @@ def input_files(file_location_list):
 
 
 def gen_sequence(file_location):
+    # ToDo: change to try: open(gz)
     path, file = os.path.split(file_location)
     if file.split('.')[-1] == 'gz':
         file_type = file.split('.')[-2]
+        # opening the file and reading the sequence
         sequence = ''.join(
             [str(elem) for elem in
              [seq_record.seq for seq_record in SeqIO.parse(gzip.open(file_location, "rt"), file_type)]])
     else:
         file_type = file.split('.')[-1]
+        # opening the file and reading the sequence
         with open(file_location) as handle:
             sequence = ''.join(
                 [str(elem) for elem in [seq_record.seq for seq_record in SeqIO.parse(handle, file_type)]])
@@ -133,7 +151,7 @@ def gen_sequence(file_location):
         sys.exit("There seems to be no sequence in your file!")
     return sequence
 
-
+# for SkewIT
 def reformat_bp(tick_val, pos):
     val = round(tick_val/1000000,1)
     new_tick = '{:} Mb'.format(val)
@@ -144,6 +162,7 @@ def reformat_bp(tick_val, pos):
 def plot_sequence(results, filelocation, outputfolder=None, out_file_type=None, dpi=None, skewi=None):
     path, file = os.path.split(filelocation)
     skew = results.skew
+    # setting defaults
     if not skewi:
         skewi = False
     # substitution of skew with skewIT results
@@ -196,6 +215,4 @@ def plot_sequence(results, filelocation, outputfolder=None, out_file_type=None, 
         os.path.join(outputfolder,
                      file.replace("." + file_type, "") + results.nuc_1 + results.nuc_2 + "skew." + out_file_type),
         bbox_inches='tight', dpi=dpi)
-# to do: Dartstellung noch umändern
-# test
 
