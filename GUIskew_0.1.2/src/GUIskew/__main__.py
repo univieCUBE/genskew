@@ -12,7 +12,8 @@ from matplotlib.backend_bases import key_press_handler
 import numpy as np
 import matplotlib.ticker as tick
 
-# noch  zu tun: größe des grund fensters umändern(wirklich notwendig?)
+# ToDo: fixed window size, compiling tkinter with the package (-> no extra install for pypi)
+# this whole thing is essentially the commandline client, but with tkinter instead of argparse
 window = Tk()
 global filenames
 global output_folder
@@ -153,8 +154,6 @@ def calculate():
                 axis.grid(b=None, which='major', axis='both')
                 axis.ticklabel_format(axis='x', style='plain')
                 axis.legend()
-
-# das Problem liegt hier
             canvas = FigureCanvasTkAgg(fig, master=window)  # A tk.DrawingArea.
             canvas.draw()
             canvas.get_tk_widget().grid(column=0, row=2, columnspan=8)
@@ -162,7 +161,7 @@ def calculate():
         #    lbel.configure(text='Something went wrong, maybe your file is faulty or empty?')
 
 
-# Widgets in the tk window
+# Widgets in the tk window + layout
 window.title("GUIskew")
 
 Browse_btn = Button(window, text="Browse", command=browse)
