@@ -2,9 +2,10 @@ import Genskew_univiecube as gs
 import argparse
 import matplotlib.pyplot as plt
 
-
+# limiting factor for arg parse stepsize and windowsize arguments
 def check_size(value):
     ivalue = int(value)
+    # sets int to 100 if it is smaller
     if ivalue <= 100:
         ivalue = 100
     return ivalue
@@ -45,14 +46,14 @@ parser.add_argument('--skewIT', '-sk',
                     help='The skewIT algorithm will be used for the graph. Use -sk true to activate this feature.')
 
 args = parser.parse_args()
-
+# parsing input files (via Genskew Library)
 inputfiles = gs.input_files(args.file_location)
-# defining the sequence
+# defining the sequence list
 sequence_list = []
 for file in inputfiles:
     sequence1 = gs.gen_sequence(file)
     sequence_list.append(sequence1)
-# making an object
+
 a = 0
 variable_list = []
 results_list = []
@@ -62,9 +63,12 @@ if args.skewIT != None:
 for sequence in sequence_list:
     variable_list.append('genskew' + str(a))
     results_list.append('result' + str(a))
+    # making the object for later calculation
     variable_list[a] = gs.Object(sequence, args.nuc_1, args.nuc_2, args.stepsize, args.windowsize)
+    # actual calculation
     results_list[a] = gs.Object.gen_results(variable_list[a])
     print(str(a + 1) + " out of " + str(len(sequence_list)) + " graphs calculated...")
+    # plotting sequence, this already saves the sequence to output_folder
     gs.plot_sequence(results_list[a], inputfiles[a], args.output_folder, args.out_file_type, args.dpi, skewi)
     print(str(a + 1) + " out of " + str(len(sequence_list)) + " graphs saved...")
     a = a + 1
